@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Beiruti:wght@200..900&family=Playpen+Sans+Arabic:wght@100..800&display=swap" rel="stylesheet">
+<title>نمایش نقش‌ها</title>
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
+  body {
+    margin: 0;
+    font-family:'Playpen Sans Arabic', cursive;
+    background: linear-gradient(135deg, #9b59b6, #e91e63);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    user-select: none;
+    flex-direction: column;
+    text-shadow: 0 0 6px rgba(0,0,0,0.4);
+  }
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 40px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-shadow:
+      0 0 5px #f48fb1,
+      0 0 10px #f48fb1,
+      0 0 20px #f48fb1;
+  }
+  input[type=number] {
+    padding: 14px 20px;
+    font-size: 1.6rem;
+    border-radius: 15px;
+    border: none;
+    width: 180px;
+    text-align: center;
+    outline: none;
+    box-shadow: 0 0 15px #f48fb1;
+    background: rgba(255 255 255 / 0.15);
+    color: #fff;
+    margin-bottom: 25px;
+    transition: box-shadow 0.3s ease;
+  }
+  input[type=number]:focus {
+    box-shadow: 0 0 25px #ff80ab;
+    background: rgba(255 255 255 / 0.3);
+  }
+  button {
+    padding: 16px 40px;
+    font-size: 1.7rem;
+    border-radius: 25px;
+    border: none;
+    background: #ff4081;
+    color: #fff;
+    font-weight: 900;
+    box-shadow:
+      0 0 15px #f48fb1,
+      0 0 30px #f48fb1;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+  }
+  button:hover:not(:disabled) {
+    background: #f50057;
+    box-shadow:
+      0 0 25px #ff4081,
+      0 0 40px #f50057;
+  }
+  button:disabled {
+    background: #d39bbf;
+    cursor: not-allowed;
+    box-shadow: none;
+    color: #eee;
+  }
+  #role-card {
+    background: linear-gradient(135deg, #f48fb1, #ad1457);
+    border-radius: 30px;
+    padding: 50px 80px;
+    box-shadow:
+      0 0 50px #f48fb1,
+      0 0 80px #ad1457;
+    font-size: 3rem;
+    font-weight: 900;
+    text-align: center;
+    user-select: none;
+    max-width: 95vw;
+    min-height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: pre-wrap;
+  }
+  #container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>
+</head>
+<body>
+  <div id="container">
+<img src="https://cdn.imgurl.ir/uploads/e83633_IMG_20250630_230612_096_2.png" alt="لوگوی پنهونک" style="width: 400px; display: block; margin: 0 auto;" />
+    <div id="input-section">
+      <input type="number" id="player-count" min="1" max="100" placeholder="تعداد بازیکنان" />
+      <button id="start-btn" disabled>شروع</button>
+    </div>
+    <div id="game-section" style="display:none; flex-direction: column; align-items: center; gap: 30px; margin-top: 30px;">
+      <div id="role-card">برای شروع بازی کلیک کنید</div>
+      <button id="next-btn">بعدی</button>
+    </div>
+  </div>
+
+<script>
+  const roles = [
+    "پری", "دزد", "پلیس", "دختر", "عروس", "داماد", "شاه", "ملکه",
+    "سرباز", "جادوگر", "شکارچی", "روح", "دکتر", "معلم", "کشیش",
+    "شاهزاده", "جاسوس", "غول", "فرشته", "شیطان", "دیو", "پادشاه",
+    "مهاجم", "دلقک", "فرمانده", "نقابدار", "شوالیه", "جادوگر",
+    "نجار", "دخترک", "نجیب‌زاده", "کلانتر", "صیاد", "شاعر",
+    "گلادیاتور", "راهب", "نقاش", "خلبان", "کاشف", "فروشنده",
+    "دندان‌پزشک", "نقاش", "رقصنده", "راننده", "مسافر", "کشاورز",
+    "نجیب", "پزشک", "معمار", "مغازه‌دار", "نویسنده", "فیلسوف",
+    "شاهد", "قاضی", "مرد جنگل", "دخترک مهربان", "سرباز قدیمی",
+    "شاهزاده خانم", "دختر ماه", "نگهبان", "دانشمند", "ساحره",
+    "جادوگر بزرگ", "آدم‌برفی", "شاهزاده تاریکی", "فرمانده سپاه",
+    "خلبان ماهر", "دزد دریایی", "راهزن", "ناشناس", "شاهزاده عشق",
+    "عروس دریایی", "دلبر", "همدم", "یاغی", "سرآشپز", "مخترع",
+    "شومن", "دوست وفادار", "گرگ", "خرس", "مار", "پرنده", "گربه",
+    "شبح", "پزشک جنگل", "صندوق‌دار", "دستیار", "عطار", "کارآگاه",
+    "پروفسور", "مهندس", "ناجی", "مهاجر", "راننده تاکسی", "تاجر"
+  ];
+
+  const playerCountInput = document.getElementById("player-count");
+  const startBtn = document.getElementById("start-btn");
+  const inputSection = document.getElementById("input-section");
+  const gameSection = document.getElementById("game-section");
+  const roleCard = document.getElementById("role-card");
+  const nextBtn = document.getElementById("next-btn");
+
+  let playerCount = 0;
+  let shuffledRoles = [];
+  let step = 0; // برای ردیابی مرحله
+
+  playerCountInput.addEventListener("input", () => {
+    const val = Number(playerCountInput.value);
+    startBtn.disabled = !(val >= 1 && val <= 100);
+  });
+
+  startBtn.addEventListener("click", () => {
+    playerCount = Number(playerCountInput.value);
+    if(playerCount < 1 || playerCount > 100) {
+      alert("تعداد بازیکنان باید بین 1 تا 100 باشد.");
+      return;
+    }
+
+    shuffledRoles = shuffle(roles).slice(0, playerCount);
+
+    inputSection.style.display = "none";
+    gameSection.style.display = "flex";
+    step = 0;
+    roleCard.textContent = "برای شروع بازی کلیک کنید";
+    nextBtn.textContent = "بعدی";
+    nextBtn.style.display = "inline-block";
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if(step >= playerCount * 2) {
+      roleCard.textContent = "✅ همه نقش‌ها دیدن شد. بازی شروع شد!";
+      nextBtn.style.display = "none";
+      return;
+    }
+
+    if(step % 2 === 0) {
+      const playerNum = Math.floor(step / 2) + 1;
+      roleCard.textContent = `نقش شما: ${shuffledRoles[playerNum - 1]}`;
+      nextBtn.textContent = "بعدی";
+    } else {
+      if (Math.floor(step / 2) + 1 < playerCount) {
+        roleCard.textContent = "دستگاه را به نفر بعدی بدهید";
+      } else {
+        roleCard.textContent = "نقش‌ها تمام شد. دستگاه را کنار بگذارید و بازی را شروع کنید!";
+      }
+      nextBtn.textContent = "بعدی";
+    }
+
+    step++;
+  });
+
+  function shuffle(array) {
+    const arr = array.slice();
+    for(let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+</script>
+</body>
+</html>
